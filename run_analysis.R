@@ -4,7 +4,6 @@ require("reshape2")
 
 
 # 1) Merge the training and the test sets to create one data set.
-setwd("E:/Coursera/03. Getting and Cleaning data/Project")
 homeDir<-getwd()
 
 trainDir<-paste0(homeDir,"/UCI HAR Dataset/train")
