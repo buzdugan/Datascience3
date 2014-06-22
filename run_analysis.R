@@ -96,6 +96,7 @@ dfActiv = read.table("activity_labels.txt", sep="")
 
 colnames(dfActiv) <- c("activityNo","activityName")
 
+# Create data frame by merging the selected features data frame with the activity names by activity number
 desc.feat<-merge(feat.sel,dfActiv,by="activityNo",all=TRUE)
 #Reorder the order of the columns
 ord.feat<-desc.feat[,c(2,1,69,3:68)]
@@ -108,12 +109,14 @@ ord.feat<-desc.feat[,c(2,1,69,3:68)]
 #for each activity and each subject. 
 
 library(reshape2)
-t1=melt(ord.feat,id.vars=c("activityName","subject"))
 
-
+# Create a vector with the names of the selected featured measurementsS
 meas.labels<-extractedMeas$featName
+# Create a new data frame that reshapes the ord.feat, keeping the subject number and the activity name
+#and using the names of the selected featured measurements as variables
 feat.melt <- melt(ord.feat,id=c("subject","activityName"),measure.vars=meas.labels)
+#Create the new tidy data frame
 AvData <- dcast(feat.melt, subject + activityName ~ variable, mean)
 
-
+#Write the csv file with the tidy data frame
 write.csv(AvData, file = "AvData.csv")
