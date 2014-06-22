@@ -13,6 +13,7 @@ testDir<-paste0(homeDir,"/UCI HAR Dataset/test")
 setwd(trainDir)
 getwd()
 
+# Read the train data and label the variables appropriately with the variable names.
 subjTrain = read.table("subject_train.txt", sep=" ", col.names=c("subject"))
 tTrain = read.table("X_train.txt", sep="" )
 activTrain = read.table("y_train.txt", sep=" ", col.names=c("activityNo"))
@@ -23,10 +24,10 @@ activTrain = read.table("y_train.txt", sep=" ", col.names=c("activityNo"))
 setwd(testDir)
 getwd()
 
+# Read the test data and label the variables appropriately with the variable names.
 subjTest = read.table("subject_test.txt", sep="", col.names=c("subject"))
 tTest = read.table("X_test.txt", sep="" )
 activTest = read.table("y_test.txt", sep="", col.names=c("activityNo"))
-
 
 #Read the "features.txt" into a data frame (the measurements names)
 featuresPath <- paste0(homeDir,"/UCI HAR Dataset")
@@ -34,7 +35,7 @@ setwd(featuresPath)
 getwd()
 features = read.table("features.txt", sep="")
 
-#make the elements from factors to characters in order to be able to split them with strsplit
+#Make the elements from factors to characters in order to be able to split them with strsplit
 features<-data.frame(lapply(features, as.character), stringsAsFactors=FALSE)
 colnames(features) <- c("featNo","featName")
 features$featNo<-as.numeric(as.character(features$featNo))
@@ -100,12 +101,11 @@ desc.feat<-merge(feat.sel,dfActiv,by="activityNo",all=TRUE)
 ord.feat<-desc.feat[,c(2,1,69,3:68)]
 
 
-# 4) Appropriately label the data set with descriptive variable names. 
+# 4) Appropriately label the data set with descriptive variable names.
+
 
 # 5) Create a second, independent tidy data set with the average of each variable 
 #for each activity and each subject. 
-
-tidyData <- tapply(ord.feat[,4:69],ord.feat$subject,mean)
 
 library(reshape2)
 t1=melt(ord.feat,id.vars=c("activityName","subject"))
@@ -114,3 +114,6 @@ t1=melt(ord.feat,id.vars=c("activityName","subject"))
 meas.labels<-extractedMeas$featName
 feat.melt <- melt(ord.feat,id=c("subject","activityName"),measure.vars=meas.labels)
 AvData <- dcast(feat.melt, subject + activityName ~ variable, mean)
+
+
+write.csv(AvData, file = "AvData.csv")
